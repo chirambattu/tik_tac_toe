@@ -31,17 +31,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Ticks> ticks = [
-    Ticks(0, ''),
-    Ticks(1, ''),
-    Ticks(2, ''),
-    Ticks(3, ''),
-    Ticks(4, ''),
-    Ticks(5, ''),
-    Ticks(6, ''),
-    Ticks(7, ''),
-    Ticks(8, ''),
-  ];
+  List<Ticks> ticks = [];
   String currentUser = 'X';
   bool winner = false;
 
@@ -101,8 +91,25 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void resetTicks() {
+    setState(() {
+      ticks = [];
+      for (var i = 0; i <= 8; i++) {
+        ticks.add(Ticks(i, ''));
+      }
+      winner = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    resetTicks();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //resetTicks();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -160,22 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.green,
                       iconSize: 50,
                       tooltip: 'Play again',
-                      onPressed: () => {
-                        setState(() {
-                          ticks = [
-                            Ticks(0, ''),
-                            Ticks(1, ''),
-                            Ticks(2, ''),
-                            Ticks(3, ''),
-                            Ticks(4, ''),
-                            Ticks(5, ''),
-                            Ticks(6, ''),
-                            Ticks(7, ''),
-                            Ticks(8, ''),
-                          ];
-                          winner = false;
-                        })
-                      },
+                      onPressed: () => resetTicks(),
                     )
                   : Container(),
             ]),
