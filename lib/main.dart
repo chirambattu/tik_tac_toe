@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,67 +32,72 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Ticks> ticks = [
-    Ticks(0, '', Colors.teal),
-    Ticks(1, '', Colors.teal),
-    Ticks(2, '', Colors.teal),
-    Ticks(3, '', Colors.teal),
-    Ticks(4, '', Colors.teal),
-    Ticks(5, '', Colors.teal),
-    Ticks(6, '', Colors.teal),
-    Ticks(7, '', Colors.teal),
-    Ticks(8, '', Colors.teal),
+    Ticks(0, ''),
+    Ticks(1, ''),
+    Ticks(2, ''),
+    Ticks(3, ''),
+    Ticks(4, ''),
+    Ticks(5, ''),
+    Ticks(6, ''),
+    Ticks(7, ''),
+    Ticks(8, ''),
   ];
   String currentUser = 'X';
+  bool winner = false;
 
   void onClick(int index) {
+    if (winner) {
+      return;
+    }
     setState(() {
       if (ticks[index].player == '') {
         ticks[index].player = currentUser;
+        winner = true;
+        if ([ticks[0].player, ticks[1].player, ticks[2].player]
+            .every((element) => element == currentUser)) {
+          ticks[0].background = Colors.green;
+          ticks[1].background = Colors.green;
+          ticks[2].background = Colors.green;
+        } else if ([ticks[3].player, ticks[4].player, ticks[5].player]
+            .every((element) => element == currentUser)) {
+          ticks[3].background = Colors.green;
+          ticks[4].background = Colors.green;
+          ticks[5].background = Colors.green;
+        } else if ([ticks[6].player, ticks[7].player, ticks[8].player]
+            .every((element) => element == currentUser)) {
+          ticks[6].background = Colors.green;
+          ticks[7].background = Colors.green;
+          ticks[8].background = Colors.green;
+        } else if ([ticks[0].player, ticks[3].player, ticks[6].player]
+            .every((element) => element == currentUser)) {
+          ticks[0].background = Colors.green;
+          ticks[3].background = Colors.green;
+          ticks[6].background = Colors.green;
+        } else if ([ticks[1].player, ticks[4].player, ticks[7].player]
+            .every((element) => element == currentUser)) {
+          ticks[1].background = Colors.green;
+          ticks[4].background = Colors.green;
+          ticks[7].background = Colors.green;
+        } else if ([ticks[2].player, ticks[5].player, ticks[8].player]
+            .every((element) => element == currentUser)) {
+          ticks[2].background = Colors.green;
+          ticks[5].background = Colors.green;
+          ticks[8].background = Colors.green;
+        } else if ([ticks[0].player, ticks[4].player, ticks[8].player]
+            .every((element) => element == currentUser)) {
+          ticks[0].background = Colors.green;
+          ticks[4].background = Colors.green;
+          ticks[8].background = Colors.green;
+        } else if ([ticks[2].player, ticks[4].player, ticks[6].player]
+            .every((element) => element == currentUser)) {
+          ticks[2].background = Colors.green;
+          ticks[4].background = Colors.green;
+          ticks[6].background = Colors.green;
+        } else {
+          winner = false;
+          currentUser = currentUser == 'X' ? 'O' : 'X';
+        }
       }
-
-      if ([ticks[0].player, ticks[1].player, ticks[2].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[3].player, ticks[4].player, ticks[5].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[6].player, ticks[7].player, ticks[8].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[0].player, ticks[3].player, ticks[6].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[1].player, ticks[4].player, ticks[7].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[2].player, ticks[5].player, ticks[8].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[0].player, ticks[4].player, ticks[8].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      } else if ([ticks[2].player, ticks[4].player, ticks[6].player]
-          .every((element) => element == currentUser)) {
-        ticks[0].background = Colors.green;
-        ticks[1].background = Colors.green;
-        ticks[2].background = Colors.green;
-      }
-
-      currentUser = currentUser == 'X' ? 'O' : 'X';
     });
   }
 
@@ -100,34 +107,80 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: GridView.count(
-          primary: false,
-          padding: const EdgeInsets.all(20),
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          crossAxisCount: 3,
-          children: ticks
-              .map(
-                (e) => GestureDetector(
-                  child: Container(
-                    alignment: Alignment.center,
-                    //key: Key(e!['Key']),
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      e.player,
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Center(
+              child: GridView.count(
+                primary: true,
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 3,
+                children: ticks
+                    .map(
+                      (e) => GestureDetector(
+                        child: Container(
+                          alignment: Alignment.center,
+                          //key: Key(e!['Key']),
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            e.player,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 60),
+                          ),
+                          color: e.background,
+                        ),
+                        onTap: () {
+                          onClick(e.key);
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
+          FittedBox(
+            fit: BoxFit.contain,
+            child: Column(children: <Widget>[
+              winner
+                  ? Text(
+                      'The winner is ${currentUser}',
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 60),
+                          fontWeight: FontWeight.bold, fontSize: 30),
+                    )
+                  : Text(
+                      'Next player ${currentUser}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 30),
                     ),
-                    color: e.background,
-                  ),
-                  onTap: () {
-                    onClick(e.key);
-                  },
-                ),
-              )
-              .toList(),
-        ),
+              winner
+                  ? IconButton(
+                      icon: const Icon(Icons.replay_circle_filled),
+                      color: Colors.green,
+                      iconSize: 50,
+                      tooltip: 'Play again',
+                      onPressed: () => {
+                        setState(() {
+                          ticks = [
+                            Ticks(0, ''),
+                            Ticks(1, ''),
+                            Ticks(2, ''),
+                            Ticks(3, ''),
+                            Ticks(4, ''),
+                            Ticks(5, ''),
+                            Ticks(6, ''),
+                            Ticks(7, ''),
+                            Ticks(8, ''),
+                          ];
+                          winner = false;
+                        })
+                      },
+                    )
+                  : Container(),
+            ]),
+          )
+        ],
       ),
     );
   }
@@ -137,5 +190,5 @@ class Ticks {
   int key;
   String player;
   Color background;
-  Ticks(this.key, this.player, this.background);
+  Ticks(this.key, this.player, {this.background = Colors.grey});
 }
